@@ -1,6 +1,10 @@
 import { type SetStateAction, useCallback, useState } from "react";
 import { shallowEquals } from "../equals";
 
+const isUpdater = <T>(value: SetStateAction<T>): value is (prev: T) => T => {
+  return typeof value === "function";
+};
+
 export const useShallowState = <T>(initialValue: T) => {
   const [state, setState] = useState(initialValue);
 
@@ -21,8 +25,4 @@ export const useShallowState = <T>(initialValue: T) => {
   }, []);
 
   return [state, setStateWithShallowEquals] as const;
-};
-
-const isUpdater = <T>(value: SetStateAction<T>): value is (prev: T) => T => {
-  return typeof value === "function";
 };
