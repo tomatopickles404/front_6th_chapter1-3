@@ -1,5 +1,6 @@
 import { isObject, isSame } from "../utils";
 import { type ObjectType } from "../types";
+import { compareObjectProperties } from "../utils/compareObjectProperties";
 
 export const deepEquals = (a: unknown, b: unknown): boolean => {
   if (isSame(a, b)) return true;
@@ -12,14 +13,5 @@ export const deepEquals = (a: unknown, b: unknown): boolean => {
     return a.every((value, index) => deepEquals(value, b[index]));
   }
 
-  // 3. 객체의 키 개수가 다른 경우 처리
-  const aRecord = a as ObjectType;
-  const bRecord = b as ObjectType;
-  const aKeys = Object.keys(aRecord);
-  const bKeys = Object.keys(bRecord);
-
-  if (aKeys.length !== bKeys.length) return false;
-
-  // 4. 재귀적으로 각 속성에 대해 deepEquals 호출
-  return aKeys.every((key) => deepEquals(aRecord[key], bRecord[key]));
+  return compareObjectProperties(a as ObjectType, b as ObjectType, (a, b) => deepEquals(a, b));
 };
