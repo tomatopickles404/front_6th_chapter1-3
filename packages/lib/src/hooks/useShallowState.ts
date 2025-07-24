@@ -17,11 +17,9 @@ export const useShallowState = <T>(initialValue: T) => {
       return;
     }
 
-    if (shallowEquals(state, value)) {
-      return;
+    if (!shallowEquals(state, value)) {
+      setState(value);
     }
-
-    setState(value);
   }, []);
 
   return [state, setStateWithShallowEquals] as const;
