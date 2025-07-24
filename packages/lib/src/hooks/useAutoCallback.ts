@@ -7,7 +7,5 @@ export const useAutoCallback = <T extends AnyFunction>(fn: T): T => {
 
   prevFn.current = fn;
 
-  return useCallback((...args: Parameters<T>) => {
-    return prevFn.current?.(...args);
-  }, []) as T;
+  return useCallback((...args: Parameters<T>) => prevFn.current?.(...args), []) as T;
 };
