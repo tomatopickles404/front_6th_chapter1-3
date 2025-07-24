@@ -11,10 +11,10 @@ export const useStore = <T, S = T>(store: Store<T>, selector: (state: T) => S = 
 
   const shallowSelector = useShallowSelector(selector);
 
-  const getOptimizedSnapshot = () => {
+  const getSnapshot = () => {
     const state = getState();
     return shallowSelector(state);
   };
 
-  return useSyncExternalStore(subscribe, getOptimizedSnapshot);
+  return useSyncExternalStore(subscribe, getSnapshot);
 };

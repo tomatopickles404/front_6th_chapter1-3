@@ -5,8 +5,8 @@ import { useCallback } from "./useCallback";
 type Storage<T> = ReturnType<typeof createStorage<T>>;
 
 export const useStorage = <T>(storage: Storage<T>) => {
-  const { subscribe, get } = storage;
-  const getServerSnapshot = useCallback(() => get(), [get]);
+  const { subscribe, get: getSnapshot } = storage;
+  const getServerSnapshot = useCallback(() => getSnapshot(), [getSnapshot]);
 
-  return useSyncExternalStore(subscribe, get, getServerSnapshot);
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 };
