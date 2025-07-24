@@ -1,19 +1,9 @@
 /* eslint-disable react-refresh/only-export-components */
-import {
-  useRef,
-  useEffect,
-  useMemo,
-  useCallback,
-  createContext,
-  memo,
-  type PropsWithChildren,
-  useContext,
-  useReducer,
-} from "react";
+import { createContext, memo, type PropsWithChildren, useContext, useReducer } from "react";
 import { createPortal } from "react-dom";
 import { Toast } from "./Toast";
-import { createActions, initialState, toastReducer, type ToastType } from "./toastReducer";
-import { debounce } from "../../utils";
+import { initialState, toastReducer, type ToastType } from "./toastReducer";
+import { useToastActions } from "../../hooks/useToastActions";
 
 type ShowToast = (message: string, type: ToastType) => void;
 type Hide = () => void;
@@ -33,8 +23,6 @@ const ToastStateContext = createContext<{
   ...initialState,
 });
 
-const DEFAULT_DELAY = 3000;
-
 const useToastActionContext = () => useContext(ToastActionsContext);
 const useToastStateContext = () => useContext(ToastStateContext);
 
@@ -50,24 +38,8 @@ export const useToastState = () => {
 
 export const ToastProvider = memo(({ children }: PropsWithChildren) => {
   const [state, dispatch] = useReducer(toastReducer, initialState);
-
-  const { show, hide } = useMemo(() => createActions(dispatch), [dispatch]);
+  const actions = useToastActions({ dispatch });
   const visible = state.message !== "";
-  const hideAfter = useRef(debounce(hide, DEFAULT_DELAY));
-
-  useEffect(() => {
-    hideAfter.current = debounce(hide, DEFAULT_DELAY);
-  }, [hide]);
-
-  const showWithHide = useCallback(
-    (...args: Parameters<ShowToast>) => {
-      show(...args);
-      hideAfter.current();
-    },
-    [show, hideAfter],
-  );
-
-  const actions = useMemo(() => ({ show: showWithHide, hide }), [showWithHide, hide]);
 
   return (
     <ToastActionsContext value={actions}>
