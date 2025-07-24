@@ -1,4 +1,4 @@
-import React, { type FunctionComponent } from "react";
+import { createElement, type FunctionComponent, type ReactElement } from "react";
 import { shallowEquals } from "../equals";
 import { useRef } from "../hooks/useRef";
 
@@ -6,13 +6,13 @@ import { useRef } from "../hooks/useRef";
 export function memo<P extends object>(Component: FunctionComponent<P>, equals = shallowEquals) {
   return function MemoizedComponent(props: P) {
     const prevPropsRef = useRef<P | null>(null);
-    const prevResultRef = useRef<React.ReactElement | null>(null);
+    const prevResultRef = useRef<ReactElement | null>(null);
 
     const propsChanged = !prevPropsRef.current || !equals(prevPropsRef.current, props);
 
     if (propsChanged) {
       prevPropsRef.current = props;
-      prevResultRef.current = React.createElement(Component, props);
+      prevResultRef.current = createElement(Component, props);
     }
 
     return prevResultRef.current;
